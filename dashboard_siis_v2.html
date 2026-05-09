@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actualización de Programas | UTGS</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --rojo:  #BE1622;
+     --navy:  #0d2a4a;
+    --gris:  #6F8A9B;
+    --amarel: #F0A321;
+    --teal:  #0a7a8f;
+    --gold:  #c9922a;
+    --green: #1a7a45;
+    --red:   #c0392b;
+    --gray:  #f4f6f8;
+    --mid:   #6b7280;
+    --white: #ffffff;
+    --card-shadow: 0 2px 12px rgba(13,42,74,.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; background: var(--gray); color: #525050; font-size: 18px; }
+
+  header h1,
+h1, h2, h3 {
+  font-family: 'GaramondPremier', serif;
+}
+
+
+@font-face {
+  font-family: 'Gotham';
+  src: url('fonts/gotham.woff2') format('woff2'),
+       url('fonts/gotham.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'GaramondPremier';
+  src: url('fonts/garamond-premier.woff2') format('woff2'),
+       url('fonts/garamond-premier.woff') format('woff');
+}
+
+
+
+  /* HEADER */
+
+header {
+  background: linear-gradient(135deg, var(--gris) 70%, #6F8A9B 100%);
+  color: var(--white);
+  padding: 6px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 16px;
+  border-bottom: 3px solid var(--amarel);
+  box-sizing: border-box;
+  height: 90px; 
+}
+
+/* Bloque del título */
+.titulo-header {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  white-space: nowrap;
+}
+
+header h1 {
+  font-size: 22px;
+  letter-spacing: .5px;
+  margin: 0;
+}
+
+header .sub {
+  font-size: 11px;
+  opacity: .75;
+  margin-top: 2px;
+}
+
+/* Logos */
+.logo-izq,
+.logo-der {
+  height: 70px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Meta derecha */
+.header-meta {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: nowrap; /* evita que el badge baje */
+}
+
+.badge-periodo {
+  background: var(transparent);
+  color: #0E1820;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Bloque derecho */
+.header-meta {
+  display: flex;
+  align-items: center; 
+  justify-content: flex-end;   /* empuja todo a la derecha */
+  flex: 0 0 auto;
+}
+
+/* Contenedor del logo + periodo */
+.logo-siis-bloque {
+  display: flex;
+  flex-direction: column;      /* periodo debajo del logo */
+  align-items: flex-end;       /* alinea todo a la derecha */
+  gap: 4px;
+}
+
+
+
+.version-badge {
+    background: rgba(255,255,255,0.15);
+    color:#fff;
+    font-size:10px;
+    padding: 2px 8px;
+    border-radius:10px;
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+
+
+
+
+  /* LAYOUT */
+  main { padding: 20px 28px; max-width: 1380px; margin: 0 auto; }
+
+  /* FILTROS */
+  .filters {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 20px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid #e5e7eb;
+  }
+  .filters label { font-size: 12px; color: var(--mid); margin-right: 4px; font-weight:600; }
+  .filters select, .filters input {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 13px;
+    outline: none;
+    min-width: 155px;
+    background: #fafafa;
+  }
+  .filters select:focus, .filters input:focus { border-color: var(--teal); background:#fff; }
+  .btn-reset {
+    margin-left: auto;
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .btn-reset:hover { background: var(--teal); }
+ /* KPI CARDS */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .kpi {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 16px 18px;
+    box-shadow: var(--card-shadow);
+    border-left: 4px solid var(--navy);
+    border: 1px solid #e5e7eb;
+    border-left: 4px solid var(--navy);
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi::after {
+    content: '';
+    position: absolute;
+    top:0; right:0;
+    width: 60px; height: 60px;
+    border-radius: 0 10px 0 60px;
+    opacity: 0.04;
+    background: var(--navy);
+  }
+  .kpi.green  { border-left-color: var(--green); }
+  .kpi.red    { border-left-color: var(--red); }
+  .kpi.gold   { border-left-color: var(--gold); }
+  .kpi.teal   { border-left-color: var(--teal); }
+  .kpi.navy   { border-left-color: var(--navy); }
+  .kpi .val   { font-size: 32px; font-weight: 700; line-height: 1; }
+  .kpi.navy  .val { color: var(--navy); }
+  .kpi.teal  .val { color: var(--teal); }
+  .kpi.green .val { color: var(--green); }
+  .kpi.red   .val { color: var(--red); }
+  .kpi.gold  .val { color: var(--gold); }
+  .kpi .lbl   { font-size: 11px; color: var(--mid); margin-top: 4px; }
+  .kpi .pct   { font-size: 11px; font-weight: 700; margin-top: 2px; }
+  .kpi.green .pct { color: var(--green); }
+  .kpi.red   .pct { color: var(--red); }
+  .kpi.teal  .pct { color: var(--teal); }
+
+  /* CHARTS ROW */
+  .charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  @media(max-width:900px){ .charts-row { grid-template-columns: 1fr; } }
+  .chart-card {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 16px 18px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid #e5e7eb;
+  }
+  .chart-card h3 { font-size: 13px; color: var(--navy); margin-bottom: 12px; font-weight: 700; }
+  .chart-wrap { position: relative; height: 200px; }
+ /* TABLA */
+  .table-card {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 16px 18px;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 20px;
+    border: 1px solid #e5e7eb;
+  }
+  .table-card h3 { font-size: 13px; color: var(--navy); margin-bottom: 12px; font-weight: 700; }
+  .table-wrap { overflow-x: auto; max-height: 440px; overflow-y: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  thead th {
+    background: var(--navy);
+    color: #fff;
+    padding: 9px 10px;
+    text-align: left;
+    position: sticky;
+    top: 0;
+    font-weight: 600;
+    white-space: nowrap;
+    z-index: 2;
+  }
+  tbody tr:nth-child(even) { background: #f8fafc; }
+  tbody tr:hover { background: #dbeafe; transition: background .15s; }
+  tbody td { padding: 7px 10px; border-bottom: 1px solid #e5e7eb; vertical-align: middle; }
+  .pill {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .pill.act  { background: #d1fae5; color: #065f46; }
+  .pill.des  { background: #fee2e2; color: #991b1b; }
+  .pill.cerr { background: #e5e7eb; color: #4b5563; }
+  .pill.vig  { background: #dbeafe; color: #1e40af; }
+  .pill.sr   { background: #fef3c7; color: #92400e; }
+  /* TABLA INSTITUCIÓN */
+  .inst-table { margin-bottom: 20px; }
+  .inst-bar { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; width: 90px; display:inline-block; vertical-align:middle; }
+  .inst-bar-fill { height: 100%; border-radius: 4px; background: var(--green); transition: width .4s; }
+  .inst-bar-fill.warn { background: var(--gold); }
+  .inst-bar-fill.bad  { background: var(--red); }
+
+  /* EXPORT */
+  .btn-export {
+    background: var(--teal);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-left: 8px;
+    font-weight: 600;
+  }
+  .btn-export:hover { background: var(--navy); }
+
+  /* ALERTA VENCIMIENTO */
+  .alerta-ok      { color: var(--green); font-weight: 700; }
+  .alerta-venc    { color: var(--red);   font-weight: 700; }
+  .alerta-na      { color: var(--mid); }
+  .alerta-prox    { color: var(--gold);  font-weight: 700; }
+
+
+ .section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 6px 0 14px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--teal);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .info-badge {
+    display: inline-block;
+    font-size: 10px;
+    background: var(--teal);
+    color: #fff;
+    padding: 1px 7px;
+    border-radius: 10px;
+    margin-left: 6px;
+    vertical-align: middle;
+    font-weight: 600;
+  }
+  .total-badge {
+    font-size: 11px;
+    color: var(--mid);
+    font-weight: 400;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align:center;
+    padding: 16px;
+    font-size: 11px;
+    color: var(--mid);
+    border-top: 1px solid #e5e7eb;
+    margin-top: 10px;
+  }
+
+  @media (max-width: 768px) {
+    main { padding: 14px; }
+    header { padding: 12px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img class="logo-izq" src="logo_utgs_trasparente1.PNG" alt="">
+
+  <div class="titulo-header">
+    <h1>Actualizaciones de Programas</h1>
+    <div id="periodo-badge" class="badge-periodo">Periodo: Mayo de 2026</div>
+  </div>
+
+  <div class="header-meta">
+    <div class="logo-siis-bloque">
+      <img class="logo-der" src="logo_siis_trasparente12.PNG" alt="">
+    </div>
+  </div>
+</header>
+
+<main>
+
+
+  <!-- FILTROS -->
+  <div class="filters">
+    <div><label>Institución:</label><select id="fInst" onchange="renderAll()"><option value="">Todas</option></select></div>
+    <div><label>Estado Programa:</label>
+      <select id="fEP" onchange="renderAll()">
+        <option value="">Todos</option>
+        <option value="Vigente">Vigente</option>
+        <option value="Cerrado">Cerrado</option>
+      </select>
+    </div>
+    <div><label>Estado Actualización:</label>
+      <select id="fEA" onchange="renderAll()">
+        <option value="">Todos</option>
+        <option value="Actualizado">Actualizado</option>
+        <option value="Desactualizado">Desactualizado</option>
+        <option value="Sin registro">Sin registro</option>
+      </select>
+    </div>
+    <div><label>Frecuencia:</label>
+      <select id="fFr" onchange="renderAll()">
+        <option value="">Todas</option>
+        <option value="Mensual">Mensual</option>
+        <option value="Bimensual">Bimensual</option>
+        <option value="Trimestral">Trimestral</option>
+        <option value="Semestral">Semestral</option>
+        <option value="Anual">Anual</option>
+      </select>
+    </div>
+    <div><label>Buscar:</label><input id="fBusq" type="text" placeholder="programa / institución…" oninput="renderAll()"></div>
+    <button class="btn-reset" onclick="resetFilters()">&#8635; Limpiar</button>
+    <button class="btn-export" onclick="exportCSV()">&#11015; Exportar CSV</button>
+  </div>
+
+  <!-- KPI -->
+  <div class="section-title">
+    Resumen General
+    <span class="total-badge" id="kpi-subtitle"></span>
+  </div>
+  <div class="kpi-row">
+    <div class="kpi navy"><div class="val" id="k-total">—</div><div class="lbl">Total Programas</div></div>
+    <div class="kpi teal"><div class="val" id="k-vig">—</div><div class="lbl">Vigentes</div><div class="pct" id="k-vig-p"></div></div>
+    <div class="kpi"><div class="val" id="k-cerr">—</div><div class="lbl">Cerrados</div><div class="pct" id="k-cerr-p"></div></div>
+    <div class="kpi green"><div class="val" id="k-act">—</div><div class="lbl">Actualizados</div><div class="pct" id="k-act-p"></div></div>
+    <div class="kpi red"><div class="val" id="k-des">—</div><div class="lbl">Desactualizados</div><div class="pct" id="k-des-p"></div></div>
+    <div class="kpi gold"><div class="val" id="k-inst">—</div><div class="lbl">Instituciones</div><div class="pct" id="k-inst-p"></div></div>
+  </div>
+
+  <!-- GRÁFICOS -->
+  <div class="section-title">Análisis Visual</div>
+  <div class="charts-row">
+    <div class="chart-card">
+      <h3>Estado de Actualización (Programas Vigentes)</h3>
+      <div class="chart-wrap"><canvas id="chartDonut"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>Distribución por Frecuencia de Actualización</h3>
+      <div class="chart-wrap"><canvas id="chartFreq"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>Top 8 Instituciones — % Cumplimiento</h3>
+      <div class="chart-wrap"><canvas id="chartInst"></canvas></div>
+    </div>
+  </div>
+
+  <!-- TABLA RESUMEN POR INSTITUCIÓN -->
+  <div class="section-title">
+    Resumen por Institución <span class="info-badge">Solo Vigentes</span>
+    <span class="total-badge" id="inst-count-label"></span>
+  </div>
+  <div class="table-card inst-table">
+    <div class="table-wrap">
+      <table id="tblInst">
+        <thead>
+          <tr>
+            <th>Institución</th>
+            <th>Total Vigentes</th>
+            <th>&#10003; Actualizados</th>
+            <th>&#10007; Desactualizados</th>
+            <th>Sin Registro</th>
+            <th>% Cumplimiento</th>
+          </tr>
+        </thead>
+        <tbody id="bodyInst"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TABLA DETALLE -->
+  <div class="section-title">
+    Detalle de Programas
+    <span class="total-badge" id="tblCount"></span>
+  </div>
+  <div class="table-card">
+    <div class="table-wrap">
+      <table id="tblDet">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Institución</th>
+            <th>Programa</th>
+            <th>Frecuencia</th>
+            <th>Estado Programa</th>
+            <th>Última Actualización</th>
+            <th>Estado Actualización</th>
+            <th>Días Transcurridos</th>
+            <th>Alerta Vencimiento</th>
+          </tr>
+        </thead>
+        <tbody id="bodyDet"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+   Unidad Técnica del Gabinete Social · Sistema Integrado de Información Social (SIIS)
+</footer>
+
+<script>
+// ============================================================
+// DATOS — 125 programas sincronizados con SQL canónico
+// Nota: el campo "ea" (estado actualización) se calculó en base a la fecha de última actualización ("f") y la frecuencia ("fr"), comparando con la fecha actual (2026-05-01) para determinar si el programa está actualizado, desactualizado o sin registro.
+// ============================================================
+const RAW = [{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Centro de entrenamiento del emprendedor","ep":"Vigente","fr":"Anual","f":"2025-07-08","ea":"Actualizado"},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Centro de desarrollo del emprendedor-Sinafocal Emprende","ep":"Vigente","fr":"Anual","f":"2025-03-07","ea":"Actualizado"},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Jovenes Buscadores del Primer empleo","ep":"Cerrado","fr":"Anual","f":"2019-01-31","ea":null},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Micro y pequeños empresarios","ep":"Cerrado","fr":"Anual","f":"2019-01-31","ea":null},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Pequeños productores rurales","ep":"Cerrado","fr":"Anual","f":"2019-01-31","ea":null},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Curso de Capacitación Laboral","ep":"Vigente","fr":"Anual","f":"2025-07-08","ea":"Actualizado"},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Registro de Institutos de Formación y Capacitación Laboral","ep":"Vigente","fr":"Anual","f":"2024-07-16","ea":"Actualizado"},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Acciones Formativas","ep":"Vigente","fr":"Anual","f":"2025-12-11","ea":"Actualizado"},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Servicio Nacional de Promoción Profesional SNPP","ep":"Cerrado","fr":"Anual","f":"2018-05-03","ea":null},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Programa de Capacitación para el Productor Rural","ep":"Cerrado","fr":"Anual","f":"2023-05-16","ea":null},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Centro de Innovación de Metodologias Avanzadas y Formación de Instructores","ep":"Vigente","fr":"Anual","f":"2025-07-08","ea":"Actualizado"},{"i":"Ministerio de Agricultura y Ganadería","p":"Extensión Agraria","ep":"Vigente","fr":"Anual","f":"2024-06-10","ea":"Desactualizado"},{"i":"Ministerio de Agricultura y Ganadería","p":"Programa de Agricultura y Economía Indígena","ep":"Cerrado","fr":"Anual","f":"2015-07-28","ea":null},{"i":"Ministerio de Agricultura y Ganadería","p":"Programa de Desarrollo Rural Sostenible","ep":"Cerrado","fr":"Anual","f":"2018-07-31","ea":null},{"i":"Ministerio de Agricultura y Ganadería","p":"Programa de Modernización de la Gestión Pública de Apoyos Agropecuarios","ep":"Cerrado","fr":"Anual","f":"2016-04-04","ea":null},{"i":"Ministerio de Agricultura y Ganadería","p":"Programa de Producción de Alimentos","ep":"Cerrado","fr":"Anual","f":"2015-11-23","ea":null},{"i":"Ministerio de Agricultura y Ganadería","p":"Programa Nacional de Fomento Pecuario","ep":"Cerrado","fr":"Anual","f":"2016-05-31","ea":null},{"i":"Ministerio de Agricultura y Ganadería","p":"Programa Nacional de Fortalecimiento de la Agricultura Familiar","ep":"Cerrado","fr":"Anual","f":"2015-07-28","ea":null},{"i":"Ministerio de Agricultura y Ganadería","p":"Proyecto de Fortalecimiento de la Agricultura Familiar Sostenibles","ep":"Cerrado","fr":"Anual","f":"2015-07-28","ea":null},{"i":"Ministerio de Agricultura y Ganadería","p":"Equipamiento para la Producción Agrícola en el Paraguay","ep":"Cerrado","fr":"Anual","f":"2024-06-03","ea":null},{"i":"Ministerio de Agricultura y Ganadería","p":"Proyecto de Inclusión de la Agricultura Familiar en Cadenas de Valor (Proyecto Paraguay Inclusivo)","ep":"Cerrado","fr":"Anual","f":"2018-01-11","ea":null},{"i":"Dirección de Beneficencia y Ayuda Social","p":"Asistencia Económica para gastos médicos","ep":"Vigente","fr":"Mensual","f":"2025-12-10","ea":"Actualizado"},{"i":"Dirección de Beneficencia y Ayuda Social","p":"Provisión de Insumos hospitalarios de Alta Complejidad","ep":"Vigente","fr":"Mensual","f":"2025-12-10","ea":"Actualizado"},{"i":"Consejo Nacional de Ciencia y Tecnología","p":"Incentivos para la formación de investigadores en posgrados nacionales PROCIENCIA I","ep":"Cerrado","fr":"Anual","f":"2018-01-26","ea":null},{"i":"Consejo Nacional de Ciencia y Tecnología","p":"Incentivos para la formación de investigadores en posgrados nacionales PROCIENCIA II","ep":"Vigente","fr":"Anual","f":"2025-08-22","ea":"Actualizado"},{"i":"Consejo Nacional de Ciencia y Tecnología","p":"Programa Nacional de Incentivo a los Investigadores 2018","ep":"Cerrado","fr":"Anual","f":"2018-03-13","ea":null},{"i":"Consejo Nacional de Ciencia y Tecnología","p":"Programa Nacional de Incentivo a los Investigadores 2022","ep":"Cerrado","fr":"Anual","f":"2023-05-26","ea":null},{"i":"Consejo Nacional de Ciencia y Tecnología","p":"Programa Nacional de Incentivo a los Investigadores 2023","ep":"Cerrado","fr":"Anual","f":"2024-10-15","ea":null},{"i":"Consejo Nacional de Ciencia y Tecnología","p":"Sistema Nacional de Investigadores (SISNI) 2024","ep":"Vigente","fr":"Anual","f":"2025-08-22","ea":"Actualizado"},{"i":"Fondo Nacional de la Cultura y las Artes","p":"Trasferencias Becas","ep":"Vigente","fr":"Trimestral","f":"2026-01-05","ea":"Actualizado"},{"i":"Fondo Nacional de la Cultura y las Artes","p":"Trasferencias Personas Físicas","ep":"Vigente","fr":"Trimestral","f":"2026-01-05","ea":"Actualizado"},{"i":"Secretaria Nacional de Emergencia","p":"Asistencia en Situacion de Emergencia y/o Desastres","ep":"Vigente","fr":"Mensual","f":"2025-11-27","ea":"Actualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Asistencia Financiera","ep":"Cerrado","fr":"Mensual","f":"2015-10-13","ea":null},{"i":"Crédito Agrícola de Habilitación","p":"Banca Comunal","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Bonos Equipamiento para la Producción Agrícola","ep":"Cerrado","fr":"Mensual","f":"2018-12-14","ea":null},{"i":"Crédito Agrícola de Habilitación","p":"Bonos Equipamiento para la Producción Agrícola (EPA 70/30)","ep":"Cerrado","fr":"Mensual","f":"2020-06-02","ea":null},{"i":"Crédito Agrícola de Habilitación","p":"CAH MERCADEO","ep":"Vigente","fr":"Mensual","f":"2020-10-06","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Crédito a través de Descuento de Documento","ep":"Vigente","fr":"Mensual","f":"2020-10-06","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Dirección de Apoyo a la Agricultura Familiar","ep":"Cerrado","fr":"Mensual","f":"2020-10-06","ea":null},{"i":"Crédito Agrícola de Habilitación","p":"Inversión Productiva","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Juventud Emprendedora","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Mujer Emprendedora","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Petro CAH","ep":"Vigente","fr":"Mensual","f":"2020-10-06","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"ProAgro CAH","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Programa de Producción de Alimento","ep":"Cerrado","fr":"Mensual","f":"2020-10-06","ea":null},{"i":"Crédito Agrícola de Habilitación","p":"ProMandioca","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Subsidio","ep":"Cerrado","fr":"Mensual","f":"2015-07-29","ea":null},{"i":"Crédito Agrícola de Habilitación","p":"Equipamiento para la Producción Agricola Recuperación de Inversión","ep":"Cerrado","fr":"Mensual","f":"2020-10-07","ea":null},{"i":"Crédito Agrícola de Habilitación","p":"Turismo Rural","ep":"Vigente","fr":"Mensual","f":"2020-10-06","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Ñepyrura","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Alquimia","ep":"Cerrado","fr":"Mensual","f":"2020-06-02","ea":null},{"i":"Crédito Agrícola de Habilitación","p":"Po Joasa","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Mbaretera","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Triagro BioCAH","ep":"Cerrado","fr":"Mensual","f":"2020-10-06","ea":null},{"i":"Crédito Agrícola de Habilitación","p":"Para micro y pequeñas empresas","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Producción acuicola","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Instituto Nacional de Desarrollo Rural y de la Tierra","p":"Titulación de Tierras","ep":"Vigente","fr":"Semestral","f":"2024-01-04","ea":"Actualizado"},{"i":"Instituto Forestal Nacional","p":"Asistencia Técnica realizada","ep":"Cerrado","fr":"Mensual","f":"2022-08-22","ea":null},{"i":"Instituto Forestal Nacional","p":"Asistencia Técnica a productores y productoras","ep":"Cerrado","fr":"Mensual","f":"2023-10-01","ea":null},{"i":"Instituto Forestal Nacional","p":"Capacitación a productores rurales y actores del sector forestal","ep":"Cerrado","fr":"Mensual","f":"2019-10-01","ea":null},{"i":"Instituto Forestal Nacional","p":"Asistencia Técnica a productores rurales y otros del sector","ep":"Vigente","fr":"Mensual","f":"2025-12-12","ea":"Actualizado"},{"i":"Instituto Forestal Nacional","p":"Formación de Técnico Superior Forestal","ep":"Vigente","fr":"Anual","f":"2025-05-20","ea":"Actualizado"},{"i":"Ministerio de Educación y Ciencias","p":"Administración del Sistema Educativo Cultural","ep":"Cerrado","fr":"Anual","f":"2017-10-02","ea":null},{"i":"Ministerio de Educación y Ciencias","p":"Administración del Sistema Educativo Cultural Becas Media","ep":"Vigente","fr":"Anual","f":"2025-12-11","ea":"Actualizado"},{"i":"Ministerio de Educación y Ciencias","p":"Administración del Sistema Educativo Cultural Tercer Ciclo","ep":"Vigente","fr":"Anual","f":"2024-07-04","ea":"Actualizado"},{"i":"Ministerio de Educación y Ciencias","p":"Administración del Sistema Educativo Cultural Becas Superior","ep":"Vigente","fr":"Anual","f":"2025-09-24","ea":"Actualizado"},{"i":"Ministerio de Industria y Comercio","p":"FOCEM","ep":"Cerrado","fr":"Trimestral","f":"2015-07-25","ea":null},{"i":"Ministerio de Industria y Comercio","p":"Programa Competitividad Microempresarial.","ep":"Cerrado","fr":"Trimestral","f":"2017-12-10","ea":null},{"i":"Ministerio de Industria y Comercio","p":"Incubadora de Empresas","ep":"Cerrado","fr":"Trimestral","f":"2015-07-25","ea":null},{"i":"Ministerio de Salud Pública y Bienestar Social","p":"APS","ep":"Vigente","fr":"Trimestral","f":"2017-08-11","ea":"Desactualizado"},{"i":"Ministerio de Salud Pública y Bienestar Social","p":"Salud Bucodental","ep":"Vigente","fr":"Trimestral","f":"2017-09-08","ea":"Desactualizado"},{"i":"Ministerio de Salud Pública y Bienestar Social","p":"Sub Sistema de Informacion de Estadisticas Vitales (partos)","ep":"Vigente","fr":"Trimestral","f":"2024-07-14","ea":"Desactualizado"},{"i":"Secretaria Nacional por los Derechos Humanos de las Personas con Discapacidad","p":"Protección y Rehabilitación a Personas con Discapacidad","ep":"Vigente","fr":"Mensual","f":"2025-12-12","ea":"Actualizado"},{"i":"Secretaria Nacional de Deportes","p":"Becas","ep":"Cerrado","fr":"Anual","f":"2023-12-27","ea":null},{"i":"Secretaria Nacional de Deportes","p":"Proyecto escuela iniciación deportiva","ep":"Cerrado","fr":"Anual","f":"2024-03-04","ea":null},{"i":"Secretaria Nacional de Deportes","p":"Juegos Escolares Estudiantiles Nacionales","ep":"Vigente","fr":"Anual","f":"2026-05-01","ea":"Actualizado"},{"i":"Secretaria Nacional de Deportes","p":"colonia de verano","ep":"Vigente","fr":"Anual","f":"2025-09-12","ea":"Actualizado"},{"i":"Secretaria Nacional de Deportes","p":"Programa de Apoyo a Atletas de Alto Rendimiento","ep":"Vigente","fr":"Anual","f":"2026-01-05","ea":"Actualizado"},{"i":"Secretaria Nacional de Deportes","p":"Torneo Interinstitucional","ep":"Vigente","fr":"Anual","f":"2026-01-05","ea":"Actualizado"},{"i":"Secretaria Nacional de Deportes","p":"Escuela Deportiva SND","ep":"Vigente","fr":"Anual","f":"2026-01-05","ea":"Actualizado"},{"i":"Administración Nacional de Electricidad","p":"Tarifa Social de la Ande","ep":"Vigente","fr":"Semestral","f":"2024-11-18","ea":"Desactualizado"},{"i":"Instituto Paraguayo del Indígena","p":"Asistencia Integral a Indígenas","ep":"Cerrado","fr":"Anual","f":"2019-10-10","ea":null},{"i":"Instituto Paraguayo del Indígena","p":"Asistencia Económica a Indigenas (Ayuda Social y Subsidio Estudiantil)","ep":"Vigente","fr":"Mensual","f":"2025-11-03","ea":"Actualizado"},{"i":"Instituto Paraguayo del Indígena","p":"Asistencia Técnica Jurídica a Comunidades Indigenas (Medios de Vida)","ep":"Cerrado","fr":"Mensual","f":"2023-12-12","ea":null},{"i":"Instituto Paraguayo del Indígena","p":"Asistencia Técnica y económica para el desarrollo productivo","ep":"Vigente","fr":"Anual","f":"2025-06-18","ea":"Actualizado"},{"i":"Ministerio de la Mujer","p":"Mujeres Emprendedoras de la Agricultura Familiar (ALA/UE)","ep":"Cerrado","fr":"Anual","f":"2017-12-19","ea":null},{"i":"Ministerio de Hacienda","p":"Gastos de Sepelios","ep":"Vigente","fr":"Mensual","f":"2020-07-22","ea":"Actualizado"},{"i":"Ministerio de Hacienda","p":"Haberes Atrasados","ep":"Vigente","fr":"Mensual","f":"2017-04-25","ea":"Actualizado"},{"i":"Ministerio de Hacienda","p":"Herederos de Policías y Militares","ep":"Vigente","fr":"Mensual","f":"2025-06-24","ea":"Actualizado"},{"i":"Ministerio de Hacienda","p":"Herederos de Veteranos","ep":"Vigente","fr":"Mensual","f":"2025-06-30","ea":"Actualizado"},{"i":"Ministerio de Hacienda","p":"Pension Graciable","ep":"Vigente","fr":"Mensual","f":"2025-06-24","ea":"Actualizado"},{"i":"Ministerio de Hacienda","p":"Pensión a Veteranos de la Guerra del Chaco","ep":"Vigente","fr":"Mensual","f":"2025-06-24","ea":"Actualizado"},{"i":"Ministerio de Desarrollo Social","p":"Focem Mercosur Habitat - Fortalecimiento de Capital Humano y Social en Condiciones de Pobreza","ep":"Cerrado","fr":"Bimensual","f":"2017-02-28","ea":null},{"i":"Ministerio de Desarrollo Social","p":"Proyecto FOCEM YPORA - Acceso al agua potable y saneamiento básico","ep":"Cerrado","fr":"Bimensual","f":"2016-11-05","ea":null},{"i":"Ministerio de Desarrollo Social","p":"Programa de Asistencia a Pescadores del Territorio Nacional","ep":"Vigente","fr":"Anual","f":"2025-04-29","ea":"Actualizado"},{"i":"Ministerio de Desarrollo Social","p":"PROGRAMA TENONDERÃ","ep":"Vigente","fr":"Semestral","f":"2025-10-10","ea":"Actualizado"},{"i":"Ministerio de Desarrollo Social","p":"TEKOHA - Programa de Desarrollo y Apoyo Social a Territorios Sociales","ep":"Vigente","fr":"Semestral","f":"2025-12-16","ea":"Actualizado"},{"i":"Ministerio de Desarrollo Social","p":"TEKOPORÃ - Programa de Transferencia Monetaria con Corresponsabilidad","ep":"Vigente","fr":"Mensual","f":"2024-10-09","ea":"Actualizado"},{"i":"Ministerio de Desarrollo Social","p":"Pension Alimentaria Adulto Mayor","ep":"Vigente","fr":"Mensual","f":"2025-12-16","ea":"Actualizado"},{"i":"Secretaría de Desarrollo para Repatriados y Refugiados Connacionales","p":"Subsidio de repatriación de connacionales","ep":"Vigente","fr":"Trimestral","f":"2025-08-18","ea":"Actualizado"},{"i":"Secretaría de Desarrollo para Repatriados y Refugiados Connacionales","p":"Subsidio de repatriación de restos mortales de connacionales","ep":"Vigente","fr":"Trimestral","f":"2025-07-09","ea":"Actualizado"},{"i":"Secretaría de Desarrollo para Repatriados y Refugiados Connacionales","p":"Subsidio de Repatriación de Asistencia Económica","ep":"Vigente","fr":"Trimestral","f":"2025-10-08","ea":"Actualizado"},{"i":"Secretaría de Desarrollo para Repatriados y Refugiados Connacionales","p":"Aporte financiero complementario","ep":"Vigente","fr":"Trimestral","f":"2025-10-09","ea":"Actualizado"},{"i":"Secretaría Nacional de Turismo","p":"Turismo Joven","ep":"Vigente","fr":"Semestral","f":"2025-12-08","ea":"Actualizado"},{"i":"Secretaría Nacional de Turismo","p":"Programa Posadas Turisticas de Paraguay","ep":"Vigente","fr":"Semestral","f":"2024-06-24","ea":"Desactualizado"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Coordinadora Ejecutiva para la Reforma Agraria","ep":"Cerrado","fr":"Anual","f":"2015-07-26","ea":null},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Construcción de 4500 soluciones habitacionales en el Paraguay CHE TAPYI","ep":"Cerrado","fr":"Anual","f":"2023-05-12","ea":null},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Construcción de 600 SH en el B° San Blas Mariano Roque Alonso","ep":"Cerrado","fr":"Anual","f":"2024-04-23","ea":null},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Construcción de 1000 Soluciones Habitacionales para Pueblos Indígenas","ep":"Vigente","fr":"Anual","f":"2025-08-04","ea":"Actualizado"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Mi vivienda","ep":"Vigente","fr":"Anual","f":"2024-05-02","ea":"Actualizado"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Fondo Nacional de la Vivienda Social (FONAVIS)","ep":"Vigente","fr":"Anual","f":"2025-04-25","ea":"Actualizado"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Fondo para la Convergencia Estructural del Mercosur (FOCEM)","ep":"Cerrado","fr":"Anual","f":"2015-07-26","ea":null},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Programa de Regularización de Asentamientos","ep":"Cerrado","fr":"Anual","f":"2015-07-26","ea":null},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Programa Foncoop (Fondo de viviendas para las cooperativas)","ep":"Cerrado","fr":"Anual","f":"2015-07-26","ea":null},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Pueblos Originarios","ep":"Vigente","fr":"Anual","f":"2025-04-25","ea":"Actualizado"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Sembrando Oportunidades","ep":"Cerrado","fr":"Anual","f":"2022-03-31","ea":null},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Entidades Binacionales","ep":"Cerrado","fr":"Anual","f":"2022-03-31","ea":null},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Vy'a Rendá","ep":"Vigente","fr":"Anual","f":"2025-08-04","ea":"Actualizado"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Mejoramiento y Ampliación de Viviendas del Área Metropolitana de Asunción AMA","ep":"Vigente","fr":"Anual","f":"2024-10-28","ea":"Desactualizado"},{"i":"Ministerio de la Niñez y la Adolescencia","p":"Abrazo","ep":"Vigente","fr":"Mensual","f":"2026-04-30","ea":"Actualizado"},{"i":"Ministerio de la Niñez y la Adolescencia","p":"Programa Nacional de Cuidados Alterntativos DICUIDA","ep":"Vigente","fr":"Mensual","f":"2025-10-07","ea":"Desactualizado"},{"i":"Secretaria de la Juventud","p":"Apoyo economico a la educación superior","ep":"Vigente","fr":"Anual","f":"2024-05-07","ea":"Desactualizado"},{"i":"Ministerio de Justicia y Trabajo","p":"Ambaapo Paraguay","ep":"Cerrado","fr":"Anual","f":null,"ea":null},{"i":"Ministerio de Justicia y Trabajo","p":"Sistema Nacional de Formación y Capacitación Laboral","ep":"Cerrado","fr":"Anual","f":null,"ea":null},{"i":"Servicio Nacional de Saneamiento Ambiental","p":"Vacunación Antiaftosa","ep":"Cerrado","fr":"Anual","f":null,"ea":null}];
+
+// ============================================================
+// CONSTANTES
+// ============================================================
+const DIAS_INTERVALO = {Mensual:30, Bimensual:60, Trimestral:90, Semestral:180, Anual:365};
+const PROX_FACTOR = 0.85; // 85% del intervalo → alerta de "Próximo a vencer"
+const TODAY = new Date();
+ 
+// ============================================================
+// UTILIDADES
+// ============================================================
+function diasDesde(f) {
+  if (!f) return null;
+  return Math.floor((TODAY - new Date(f + 'T00:00:00')) / 86400000);
+}
+
+function alertaVencimiento(r) {
+  if (r.ep === 'Cerrado') return {txt: 'N/A — Cerrado', cls: 'alerta-na'};
+  if (!r.f) return {txt: 'Sin fecha', cls: 'alerta-na'};
+  const dias = diasDesde(r.f);
+  const intervalo = DIAS_INTERVALO[r.fr] || 365;
+  if (dias > intervalo)               return {txt: '⚠ Vencida',             cls: 'alerta-venc'};
+  if (dias > intervalo * PROX_FACTOR) return {txt: '⏳ Próxima a vencer',   cls: 'alerta-prox'};
+  return {txt: '✓ Al día', cls: 'alerta-ok'};
+}
+
+function fmtFecha(f) {
+  if (!f) return '—';
+  const [y, m, d] = f.split('-');
+  return `${d}/${m}/${y}`;
+}
+
+function eaNorm(r) {
+  return r.ep === 'Cerrado' ? 'Sin registro' : (r.ea || 'Sin registro');
+}
+
+// ============================================================
+// INICIALIZACIÓN
+// ============================================================
+// Cargar instituciones únicas en filtro
+const insts = [...new Set(RAW.map(r => r.i))].sort();
+const sel = document.getElementById('fInst');
+insts.forEach(n => {
+  const o = document.createElement('option');
+  o.value = n; o.text = n;
+  sel.appendChild(o);
+});
+
+// Badge de período
+const m = TODAY.toLocaleString('es-PY', {month: 'long', year: 'numeric'});
+document.getElementById('periodo-badge').textContent = 'Período: ' + m.charAt(0).toUpperCase() + m.slice(1);
+
+// ============================================================
+// FILTRADO
+// ============================================================
+function getFiltered() {
+  const fi = document.getElementById('fInst').value;
+  const fe = document.getElementById('fEP').value;
+  const fa = document.getElementById('fEA').value;
+  const ff = document.getElementById('fFr').value;
+  const fb = document.getElementById('fBusq').value.toLowerCase().trim();
+  return RAW.filter(r => {
+    const ea = eaNorm(r);
+    if (fi && r.i !== fi) return false;
+    if (fe && r.ep !== fe) return false;
+    if (fa && ea !== fa) return false;
+    if (ff && r.fr !== ff) return false;
+    if (fb && !r.p.toLowerCase().includes(fb) && !r.i.toLowerCase().includes(fb)) return false;
+    return true;
+  }).map(r => ({...r, ea_norm: eaNorm(r)}));
+}
+
+// ============================================================
+// RENDER KPI
+// ============================================================
+function renderKPI(data) {
+  const total = data.length;
+  const vig   = data.filter(r => r.ep === 'Vigente').length;
+  const cerr  = data.filter(r => r.ep === 'Cerrado').length;
+  const act   = data.filter(r => r.ea_norm === 'Actualizado').length;
+  const des   = data.filter(r => r.ea_norm === 'Desactualizado').length;
+  const inst  = new Set(data.map(r => r.i)).size;
+
+  document.getElementById('k-total').textContent = total;
+  document.getElementById('k-vig').textContent   = vig;
+  document.getElementById('k-cerr').textContent  = cerr;
+  document.getElementById('k-act').textContent   = act;
+  document.getElementById('k-des').textContent   = des;
+  document.getElementById('k-inst').textContent  = inst;
+
+  document.getElementById('k-vig-p').textContent  = total ? `${Math.round(vig/total*100)}% del total` : '';
+  document.getElementById('k-cerr-p').textContent = total ? `${Math.round(cerr/total*100)}% del total` : '';
+  document.getElementById('k-act-p').textContent  = vig ? `${Math.round(act/vig*100)}% de vigentes` : '';
+  document.getElementById('k-des-p').textContent  = vig ? `${Math.round(des/vig*100)}% de vigentes` : '';
+  document.getElementById('k-inst-p').textContent = `con programas registrados`;
+
+  const filterActive = document.getElementById('fInst').value || document.getElementById('fEP').value
+    || document.getElementById('fEA').value || document.getElementById('fFr').value
+    || document.getElementById('fBusq').value;
+  document.getElementById('kpi-subtitle').textContent = filterActive
+    ? `Filtro activo: ${total} de ${RAW.length} programas`
+    : `Total: ${RAW.length} programas · ${new Set(RAW.map(r=>r.i)).size} instituciones`;
+}
+
+// ============================================================
+// RENDER CHARTS
+// ============================================================
+let chartDonut, chartFreq, chartInst;
+
+function renderCharts(data) {
+  const vig = data.filter(r => r.ep === 'Vigente');
+  const act = vig.filter(r => r.ea_norm === 'Actualizado').length;
+  const des = vig.filter(r => r.ea_norm === 'Desactualizado').length;
+  const sr  = vig.filter(r => r.ea_norm === 'Sin registro').length;
+
+  // DONUT
+  if (chartDonut) chartDonut.destroy();
+  chartDonut = new Chart(document.getElementById('chartDonut'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Actualizado', 'Desactualizado', 'Sin Registro'],
+      datasets: [{
+        data: [act, des, sr],
+        backgroundColor: ['#1a7a45', '#c0392b', '#f59e0b'],
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: {position: 'bottom', labels: {font: {size: 11}, padding: 10}},
+        tooltip: {callbacks: {label: ctx => ` ${ctx.label}: ${ctx.raw} (${Math.round(ctx.raw/(act+des+sr)*100)}%)`}}
+      }
+    }
+  });
+
+  // FRECUENCIA
+  const frMap = {};
+  data.forEach(r => frMap[r.fr] = (frMap[r.fr] || 0) + 1);
+  const frOrden = ['Mensual','Bimensual','Trimestral','Semestral','Anual'];
+  if (chartFreq) chartFreq.destroy();
+  chartFreq = new Chart(document.getElementById('chartFreq'), {
+    type: 'bar',
+    data: {
+      labels: frOrden,
+      datasets: [{
+        label: 'Programas',
+        data: frOrden.map(k => frMap[k] || 0),
+        backgroundColor: ['#0d2a4a','#0a7a8f','#c9922a','#1a7a45','#6366f1'],
+        borderRadius: 5
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {legend: {display: false}},
+      scales: {y: {beginAtZero: true, ticks: {font: {size: 11}, stepSize: 5}}}
+    }
+  });
+
+  // TOP INSTITUCIONES
+  const instMap = {};
+  vig.forEach(r => {
+    if (!instMap[r.i]) instMap[r.i] = {act: 0, tot: 0};
+    instMap[r.i].tot++;
+    if (r.ea_norm === 'Actualizado') instMap[r.i].act++;
+  });
+  const sorted = Object.entries(instMap)
+    .map(([k, v]) => ({i: k, pct: Math.round(v.act / v.tot * 100), tot: v.tot}))
+    .sort((a, b) => b.pct - a.pct).slice(0, 8);
+  const shortName = n => n.length > 24 ? n.substring(0, 22) + '…' : n;
+  if (chartInst) chartInst.destroy();
+  chartInst = new Chart(document.getElementById('chartInst'), {
+    type: 'bar',
+    data: {
+      labels: sorted.map(s => shortName(s.i)),
+      datasets: [{
+        label: '% Cumplimiento',
+        data: sorted.map(s => s.pct),
+        backgroundColor: sorted.map(s => s.pct >= 80 ? '#1a7a45' : s.pct >= 50 ? '#c9922a' : '#c0392b'),
+        borderRadius: 5
+      }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: {legend: {display: false}},
+      scales: {
+        x: {beginAtZero: true, max: 100, ticks: {font: {size: 10}, callback: v => v + '%'}},
+        y: {ticks: {font: {size: 10}}}
+      }
+    }
+  });
+}
+
+// ============================================================
+// RENDER TABLA INSTITUCIONES
+// ============================================================
+function renderInstTable(data) {
+  const vig = data.filter(r => r.ep === 'Vigente');
+  const map = {};
+  vig.forEach(r => {
+    if (!map[r.i]) map[r.i] = {tot: 0, act: 0, des: 0, sr: 0};
+    map[r.i].tot++;
+    if (r.ea_norm === 'Actualizado')     map[r.i].act++;
+    else if (r.ea_norm === 'Desactualizado') map[r.i].des++;
+    else                                 map[r.i].sr++;
+  });
+  const rows = Object.entries(map).sort((a, b) => b[1].tot - a[1].tot);
+  const tb = document.getElementById('bodyInst');
+  tb.innerHTML = '';
+  rows.forEach(([inst, v]) => {
+    const pct  = Math.round(v.act / v.tot * 100);
+    const cls  = pct >= 80 ? '' : pct >= 50 ? 'warn' : 'bad';
+    const tr   = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${inst}</strong></td>
+      <td style="text-align:center;font-weight:700">${v.tot}</td>
+      <td style="text-align:center;color:var(--green);font-weight:700">${v.act}</td>
+      <td style="text-align:center;color:var(--red);font-weight:700">${v.des}</td>
+      <td style="text-align:center;color:#92400e;font-weight:700">${v.sr}</td>
+      <td style="min-width:140px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="inst-bar"><div class="inst-bar-fill ${cls}" style="width:${pct}%"></div></div>
+          <span style="font-weight:700;font-size:12px;color:${pct>=80?'var(--green)':pct>=50?'var(--gold)':'var(--red)'}">${pct}%</span>
+        </div>
+      </td>`;
+    tb.appendChild(tr);
+  });
+  document.getElementById('inst-count-label').textContent =
+    `${rows.length} institución${rows.length !== 1 ? 'es' : ''} con programas vigentes`;
+}
+
+// ============================================================
+// RENDER TABLA DETALLE
+// ============================================================
+function renderDetailTable(data) {
+  const tb = document.getElementById('bodyDet');
+  tb.innerHTML = '';
+  data.forEach((r, idx) => {
+    const ea    = r.ea_norm;
+    const eaCls = ea === 'Actualizado' ? 'act' : ea === 'Desactualizado' ? 'des' : 'sr';
+    const epCls = r.ep === 'Vigente' ? 'vig' : 'cerr';
+    const alerta = alertaVencimiento(r);
+    const dias   = r.ep === 'Vigente' && r.f ? diasDesde(r.f) : null;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="color:var(--mid);text-align:center">${idx + 1}</td>
+      <td style="max-width:200px">${r.i}</td>
+      <td style="max-width:260px"><strong>${r.p}</strong></td>
+      <td><span style="font-size:11px;background:#f3f4f6;padding:2px 7px;border-radius:8px">${r.fr}</span></td>
+      <td><span class="pill ${epCls}">${r.ep}</span></td>
+      <td style="white-space:nowrap">${fmtFecha(r.f)}</td>
+      <td>${ea ? `<span class="pill ${eaCls}">${ea}</span>` : '<span class="pill cerr">N/A</span>'}</td>
+      <td style="text-align:center">${dias !== null ? dias + 'd' : '—'}</td>
+      <td class="${alerta.cls}">${alerta.txt}</td>`;
+    tb.appendChild(tr);
+  });
+  document.getElementById('tblCount').textContent =
+    `Mostrando ${data.length} de ${RAW.length} registros`;
+}
+
+// ============================================================
+// RENDER ALL
+// ============================================================
+function renderAll() {
+  const d = getFiltered();
+  renderKPI(d);
+  renderCharts(d);
+  renderInstTable(d);
+  renderDetailTable(d);
+}
+
+function resetFilters() {
+  ['fInst','fEP','fEA','fFr'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fBusq').value = '';
+  renderAll();
+}
+
+// ============================================================
+// EXPORT CSV
+// ============================================================
+function exportCSV() {
+  const d = getFiltered();
+  const hdr = ['#','Institución','Programa','Frecuencia','Estado Programa',
+                'Última Actualización','Estado Actualización','Días Transcurridos','Alerta Vencimiento'];
+  const rows = d.map((r, i) => {
+    const dias = r.ep === 'Vigente' && r.f ? diasDesde(r.f) : '';
+    const al   = alertaVencimiento(r).txt.replace(/[✓⚠⏳]/g,'').trim();
+    return [i+1, r.i, r.p, r.fr, r.ep, r.f||'', r.ea_norm||'N/A', dias, al]
+      .map(v => `"${String(v).replace(/"/g,'""')}"`).join(',');
+  });
+  const blob = new Blob(['﻿' + [hdr.join(','), ...rows].join('\n')],
+    {type: 'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'siis_programas_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
+
+// ============================================================
+// INICIAR
+// ============================================================
+renderAll();
+</script>
+</body>
+</html>
