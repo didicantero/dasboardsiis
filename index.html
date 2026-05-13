@@ -434,7 +434,7 @@ header .sub {
 
   <!-- TABLA RESUMEN POR INSTITUCIÓN -->
   <div class="section-title">
-    Resumen por Institución <span class="info-badge">Solo Vigentes</span>
+    Resumen por Institución
     <span class="total-badge" id="inst-count-label"></span>
   </div>
   <div class="table-card inst-table">
@@ -443,11 +443,12 @@ header .sub {
         <thead>
           <tr>
             <th>Institución</th>
-            <th>Total Vigentes</th>
-            <th>&#10003; Actualizados</th>
-            <th>&#10007; Desactualizados</th>
-            <th>Sin Registro</th>
-            <th>% Cumplimiento</th>
+            <th>Total</th>
+            <th>Vigentes</th>
+            <th>✓ Actualizados</th>
+            <th>✗ Desactualizados</th>
+            <th>Cerrados</th>
+            <th>% Actualización</th>
           </tr>
         </thead>
         <tbody id="bodyInst"></tbody>
@@ -457,7 +458,7 @@ header .sub {
 
   <!-- TABLA DETALLE -->
   <div class="section-title">
-    Detalle de Programas
+    Detalle de Programas Vigentes
     <span class="total-badge" id="tblCount"></span>
   </div>
   <div class="table-card">
@@ -469,7 +470,6 @@ header .sub {
             <th>Institución</th>
             <th>Programa</th>
             <th>Frecuencia</th>
-            <th>Estado Programa</th>
             <th>Última Actualización</th>
             <th>Estado Actualización</th>
             <th>Días Transcurridos</th>
@@ -490,16 +490,15 @@ header .sub {
 <script>
 // ============================================================
 // DATOS — 125 programas sincronizados con SQL canónico
-// Nota: el campo "ea" (estado actualización) se calculó en base a la fecha de última actualización ("f") y la frecuencia ("fr"), comparando con la fecha actual (2026-05-01) para determinar si el programa está actualizado, desactualizado o sin registro.
 // ============================================================
-const RAW = [{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Centro de entrenamiento del emprendedor","ep":"Vigente","fr":"Anual","f":"2025-07-08","ea":"Actualizado"},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Centro de desarrollo del emprendedor-Sinafocal Emprende","ep":"Vigente","fr":"Anual","f":"2025-03-07","ea":"Actualizado"},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Jovenes Buscadores del Primer empleo","ep":"Cerrado","fr":"Anual","f":"2019-01-31","ea":null},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Micro y pequeños empresarios","ep":"Cerrado","fr":"Anual","f":"2019-01-31","ea":null},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Pequeños productores rurales","ep":"Cerrado","fr":"Anual","f":"2019-01-31","ea":null},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Curso de Capacitación Laboral","ep":"Vigente","fr":"Anual","f":"2025-07-08","ea":"Actualizado"},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Registro de Institutos de Formación y Capacitación Laboral","ep":"Vigente","fr":"Anual","f":"2024-07-16","ea":"Actualizado"},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Acciones Formativas","ep":"Vigente","fr":"Anual","f":"2025-12-11","ea":"Actualizado"},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Servicio Nacional de Promoción Profesional SNPP","ep":"Cerrado","fr":"Anual","f":"2018-05-03","ea":null},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Programa de Capacitación para el Productor Rural","ep":"Cerrado","fr":"Anual","f":"2023-05-16","ea":null},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Centro de Innovación de Metodologias Avanzadas y Formación de Instructores","ep":"Vigente","fr":"Anual","f":"2025-07-08","ea":"Actualizado"},{"i":"Ministerio de Agricultura y Ganadería","p":"Extensión Agraria","ep":"Vigente","fr":"Anual","f":"2024-06-10","ea":"Desactualizado"},{"i":"Ministerio de Agricultura y Ganadería","p":"Programa de Agricultura y Economía Indígena","ep":"Cerrado","fr":"Anual","f":"2015-07-28","ea":null},{"i":"Ministerio de Agricultura y Ganadería","p":"Programa de Desarrollo Rural Sostenible","ep":"Cerrado","fr":"Anual","f":"2018-07-31","ea":null},{"i":"Ministerio de Agricultura y Ganadería","p":"Programa de Modernización de la Gestión Pública de Apoyos Agropecuarios","ep":"Cerrado","fr":"Anual","f":"2016-04-04","ea":null},{"i":"Ministerio de Agricultura y Ganadería","p":"Programa de Producción de Alimentos","ep":"Cerrado","fr":"Anual","f":"2015-11-23","ea":null},{"i":"Ministerio de Agricultura y Ganadería","p":"Programa Nacional de Fomento Pecuario","ep":"Cerrado","fr":"Anual","f":"2016-05-31","ea":null},{"i":"Ministerio de Agricultura y Ganadería","p":"Programa Nacional de Fortalecimiento de la Agricultura Familiar","ep":"Cerrado","fr":"Anual","f":"2015-07-28","ea":null},{"i":"Ministerio de Agricultura y Ganadería","p":"Proyecto de Fortalecimiento de la Agricultura Familiar Sostenibles","ep":"Cerrado","fr":"Anual","f":"2015-07-28","ea":null},{"i":"Ministerio de Agricultura y Ganadería","p":"Equipamiento para la Producción Agrícola en el Paraguay","ep":"Cerrado","fr":"Anual","f":"2024-06-03","ea":null},{"i":"Ministerio de Agricultura y Ganadería","p":"Proyecto de Inclusión de la Agricultura Familiar en Cadenas de Valor (Proyecto Paraguay Inclusivo)","ep":"Cerrado","fr":"Anual","f":"2018-01-11","ea":null},{"i":"Dirección de Beneficencia y Ayuda Social","p":"Asistencia Económica para gastos médicos","ep":"Vigente","fr":"Mensual","f":"2025-12-10","ea":"Actualizado"},{"i":"Dirección de Beneficencia y Ayuda Social","p":"Provisión de Insumos hospitalarios de Alta Complejidad","ep":"Vigente","fr":"Mensual","f":"2025-12-10","ea":"Actualizado"},{"i":"Consejo Nacional de Ciencia y Tecnología","p":"Incentivos para la formación de investigadores en posgrados nacionales PROCIENCIA I","ep":"Cerrado","fr":"Anual","f":"2018-01-26","ea":null},{"i":"Consejo Nacional de Ciencia y Tecnología","p":"Incentivos para la formación de investigadores en posgrados nacionales PROCIENCIA II","ep":"Vigente","fr":"Anual","f":"2025-08-22","ea":"Actualizado"},{"i":"Consejo Nacional de Ciencia y Tecnología","p":"Programa Nacional de Incentivo a los Investigadores 2018","ep":"Cerrado","fr":"Anual","f":"2018-03-13","ea":null},{"i":"Consejo Nacional de Ciencia y Tecnología","p":"Programa Nacional de Incentivo a los Investigadores 2022","ep":"Cerrado","fr":"Anual","f":"2023-05-26","ea":null},{"i":"Consejo Nacional de Ciencia y Tecnología","p":"Programa Nacional de Incentivo a los Investigadores 2023","ep":"Cerrado","fr":"Anual","f":"2024-10-15","ea":null},{"i":"Consejo Nacional de Ciencia y Tecnología","p":"Sistema Nacional de Investigadores (SISNI) 2024","ep":"Vigente","fr":"Anual","f":"2025-08-22","ea":"Actualizado"},{"i":"Fondo Nacional de la Cultura y las Artes","p":"Trasferencias Becas","ep":"Vigente","fr":"Trimestral","f":"2026-01-05","ea":"Actualizado"},{"i":"Fondo Nacional de la Cultura y las Artes","p":"Trasferencias Personas Físicas","ep":"Vigente","fr":"Trimestral","f":"2026-01-05","ea":"Actualizado"},{"i":"Secretaria Nacional de Emergencia","p":"Asistencia en Situacion de Emergencia y/o Desastres","ep":"Vigente","fr":"Mensual","f":"2025-11-27","ea":"Actualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Asistencia Financiera","ep":"Cerrado","fr":"Mensual","f":"2015-10-13","ea":null},{"i":"Crédito Agrícola de Habilitación","p":"Banca Comunal","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Bonos Equipamiento para la Producción Agrícola","ep":"Cerrado","fr":"Mensual","f":"2018-12-14","ea":null},{"i":"Crédito Agrícola de Habilitación","p":"Bonos Equipamiento para la Producción Agrícola (EPA 70/30)","ep":"Cerrado","fr":"Mensual","f":"2020-06-02","ea":null},{"i":"Crédito Agrícola de Habilitación","p":"CAH MERCADEO","ep":"Vigente","fr":"Mensual","f":"2020-10-06","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Crédito a través de Descuento de Documento","ep":"Vigente","fr":"Mensual","f":"2020-10-06","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Dirección de Apoyo a la Agricultura Familiar","ep":"Cerrado","fr":"Mensual","f":"2020-10-06","ea":null},{"i":"Crédito Agrícola de Habilitación","p":"Inversión Productiva","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Juventud Emprendedora","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Mujer Emprendedora","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Petro CAH","ep":"Vigente","fr":"Mensual","f":"2020-10-06","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"ProAgro CAH","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Programa de Producción de Alimento","ep":"Cerrado","fr":"Mensual","f":"2020-10-06","ea":null},{"i":"Crédito Agrícola de Habilitación","p":"ProMandioca","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Subsidio","ep":"Cerrado","fr":"Mensual","f":"2015-07-29","ea":null},{"i":"Crédito Agrícola de Habilitación","p":"Equipamiento para la Producción Agricola Recuperación de Inversión","ep":"Cerrado","fr":"Mensual","f":"2020-10-07","ea":null},{"i":"Crédito Agrícola de Habilitación","p":"Turismo Rural","ep":"Vigente","fr":"Mensual","f":"2020-10-06","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Ñepyrura","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Alquimia","ep":"Cerrado","fr":"Mensual","f":"2020-06-02","ea":null},{"i":"Crédito Agrícola de Habilitación","p":"Po Joasa","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Mbaretera","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Triagro BioCAH","ep":"Cerrado","fr":"Mensual","f":"2020-10-06","ea":null},{"i":"Crédito Agrícola de Habilitación","p":"Para micro y pequeñas empresas","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Crédito Agrícola de Habilitación","p":"Producción acuicola","ep":"Vigente","fr":"Mensual","f":"2024-10-29","ea":"Desactualizado"},{"i":"Instituto Nacional de Desarrollo Rural y de la Tierra","p":"Titulación de Tierras","ep":"Vigente","fr":"Semestral","f":"2024-01-04","ea":"Actualizado"},{"i":"Instituto Forestal Nacional","p":"Asistencia Técnica realizada","ep":"Cerrado","fr":"Mensual","f":"2022-08-22","ea":null},{"i":"Instituto Forestal Nacional","p":"Asistencia Técnica a productores y productoras","ep":"Cerrado","fr":"Mensual","f":"2023-10-01","ea":null},{"i":"Instituto Forestal Nacional","p":"Capacitación a productores rurales y actores del sector forestal","ep":"Cerrado","fr":"Mensual","f":"2019-10-01","ea":null},{"i":"Instituto Forestal Nacional","p":"Asistencia Técnica a productores rurales y otros del sector","ep":"Vigente","fr":"Mensual","f":"2025-12-12","ea":"Actualizado"},{"i":"Instituto Forestal Nacional","p":"Formación de Técnico Superior Forestal","ep":"Vigente","fr":"Anual","f":"2025-05-20","ea":"Actualizado"},{"i":"Ministerio de Educación y Ciencias","p":"Administración del Sistema Educativo Cultural","ep":"Cerrado","fr":"Anual","f":"2017-10-02","ea":null},{"i":"Ministerio de Educación y Ciencias","p":"Administración del Sistema Educativo Cultural Becas Media","ep":"Vigente","fr":"Anual","f":"2025-12-11","ea":"Actualizado"},{"i":"Ministerio de Educación y Ciencias","p":"Administración del Sistema Educativo Cultural Tercer Ciclo","ep":"Vigente","fr":"Anual","f":"2024-07-04","ea":"Actualizado"},{"i":"Ministerio de Educación y Ciencias","p":"Administración del Sistema Educativo Cultural Becas Superior","ep":"Vigente","fr":"Anual","f":"2025-09-24","ea":"Actualizado"},{"i":"Ministerio de Industria y Comercio","p":"FOCEM","ep":"Cerrado","fr":"Trimestral","f":"2015-07-25","ea":null},{"i":"Ministerio de Industria y Comercio","p":"Programa Competitividad Microempresarial.","ep":"Cerrado","fr":"Trimestral","f":"2017-12-10","ea":null},{"i":"Ministerio de Industria y Comercio","p":"Incubadora de Empresas","ep":"Cerrado","fr":"Trimestral","f":"2015-07-25","ea":null},{"i":"Ministerio de Salud Pública y Bienestar Social","p":"APS","ep":"Vigente","fr":"Trimestral","f":"2017-08-11","ea":"Desactualizado"},{"i":"Ministerio de Salud Pública y Bienestar Social","p":"Salud Bucodental","ep":"Vigente","fr":"Trimestral","f":"2017-09-08","ea":"Desactualizado"},{"i":"Ministerio de Salud Pública y Bienestar Social","p":"Sub Sistema de Informacion de Estadisticas Vitales (partos)","ep":"Vigente","fr":"Trimestral","f":"2024-07-14","ea":"Desactualizado"},{"i":"Secretaria Nacional por los Derechos Humanos de las Personas con Discapacidad","p":"Protección y Rehabilitación a Personas con Discapacidad","ep":"Vigente","fr":"Mensual","f":"2025-12-12","ea":"Actualizado"},{"i":"Secretaria Nacional de Deportes","p":"Becas","ep":"Cerrado","fr":"Anual","f":"2023-12-27","ea":null},{"i":"Secretaria Nacional de Deportes","p":"Proyecto escuela iniciación deportiva","ep":"Cerrado","fr":"Anual","f":"2024-03-04","ea":null},{"i":"Secretaria Nacional de Deportes","p":"Juegos Escolares Estudiantiles Nacionales","ep":"Vigente","fr":"Anual","f":"2026-05-01","ea":"Actualizado"},{"i":"Secretaria Nacional de Deportes","p":"colonia de verano","ep":"Vigente","fr":"Anual","f":"2025-09-12","ea":"Actualizado"},{"i":"Secretaria Nacional de Deportes","p":"Programa de Apoyo a Atletas de Alto Rendimiento","ep":"Vigente","fr":"Anual","f":"2026-01-05","ea":"Actualizado"},{"i":"Secretaria Nacional de Deportes","p":"Torneo Interinstitucional","ep":"Vigente","fr":"Anual","f":"2026-01-05","ea":"Actualizado"},{"i":"Secretaria Nacional de Deportes","p":"Escuela Deportiva SND","ep":"Vigente","fr":"Anual","f":"2026-01-05","ea":"Actualizado"},{"i":"Administración Nacional de Electricidad","p":"Tarifa Social de la Ande","ep":"Vigente","fr":"Semestral","f":"2024-11-18","ea":"Desactualizado"},{"i":"Instituto Paraguayo del Indígena","p":"Asistencia Integral a Indígenas","ep":"Cerrado","fr":"Anual","f":"2019-10-10","ea":null},{"i":"Instituto Paraguayo del Indígena","p":"Asistencia Económica a Indigenas (Ayuda Social y Subsidio Estudiantil)","ep":"Vigente","fr":"Mensual","f":"2025-11-03","ea":"Actualizado"},{"i":"Instituto Paraguayo del Indígena","p":"Asistencia Técnica Jurídica a Comunidades Indigenas (Medios de Vida)","ep":"Cerrado","fr":"Mensual","f":"2023-12-12","ea":null},{"i":"Instituto Paraguayo del Indígena","p":"Asistencia Técnica y económica para el desarrollo productivo","ep":"Vigente","fr":"Anual","f":"2025-06-18","ea":"Actualizado"},{"i":"Ministerio de la Mujer","p":"Mujeres Emprendedoras de la Agricultura Familiar (ALA/UE)","ep":"Cerrado","fr":"Anual","f":"2017-12-19","ea":null},{"i":"Ministerio de Hacienda","p":"Gastos de Sepelios","ep":"Vigente","fr":"Mensual","f":"2020-07-22","ea":"Actualizado"},{"i":"Ministerio de Hacienda","p":"Haberes Atrasados","ep":"Vigente","fr":"Mensual","f":"2017-04-25","ea":"Actualizado"},{"i":"Ministerio de Hacienda","p":"Herederos de Policías y Militares","ep":"Vigente","fr":"Mensual","f":"2025-06-24","ea":"Actualizado"},{"i":"Ministerio de Hacienda","p":"Herederos de Veteranos","ep":"Vigente","fr":"Mensual","f":"2025-06-30","ea":"Actualizado"},{"i":"Ministerio de Hacienda","p":"Pension Graciable","ep":"Vigente","fr":"Mensual","f":"2025-06-24","ea":"Actualizado"},{"i":"Ministerio de Hacienda","p":"Pensión a Veteranos de la Guerra del Chaco","ep":"Vigente","fr":"Mensual","f":"2025-06-24","ea":"Actualizado"},{"i":"Ministerio de Desarrollo Social","p":"Focem Mercosur Habitat - Fortalecimiento de Capital Humano y Social en Condiciones de Pobreza","ep":"Cerrado","fr":"Bimensual","f":"2017-02-28","ea":null},{"i":"Ministerio de Desarrollo Social","p":"Proyecto FOCEM YPORA - Acceso al agua potable y saneamiento básico","ep":"Cerrado","fr":"Bimensual","f":"2016-11-05","ea":null},{"i":"Ministerio de Desarrollo Social","p":"Programa de Asistencia a Pescadores del Territorio Nacional","ep":"Vigente","fr":"Anual","f":"2025-04-29","ea":"Actualizado"},{"i":"Ministerio de Desarrollo Social","p":"PROGRAMA TENONDERÃ","ep":"Vigente","fr":"Semestral","f":"2025-10-10","ea":"Actualizado"},{"i":"Ministerio de Desarrollo Social","p":"TEKOHA - Programa de Desarrollo y Apoyo Social a Territorios Sociales","ep":"Vigente","fr":"Semestral","f":"2025-12-16","ea":"Actualizado"},{"i":"Ministerio de Desarrollo Social","p":"TEKOPORÃ - Programa de Transferencia Monetaria con Corresponsabilidad","ep":"Vigente","fr":"Mensual","f":"2024-10-09","ea":"Actualizado"},{"i":"Ministerio de Desarrollo Social","p":"Pension Alimentaria Adulto Mayor","ep":"Vigente","fr":"Mensual","f":"2025-12-16","ea":"Actualizado"},{"i":"Secretaría de Desarrollo para Repatriados y Refugiados Connacionales","p":"Subsidio de repatriación de connacionales","ep":"Vigente","fr":"Trimestral","f":"2025-08-18","ea":"Actualizado"},{"i":"Secretaría de Desarrollo para Repatriados y Refugiados Connacionales","p":"Subsidio de repatriación de restos mortales de connacionales","ep":"Vigente","fr":"Trimestral","f":"2025-07-09","ea":"Actualizado"},{"i":"Secretaría de Desarrollo para Repatriados y Refugiados Connacionales","p":"Subsidio de Repatriación de Asistencia Económica","ep":"Vigente","fr":"Trimestral","f":"2025-10-08","ea":"Actualizado"},{"i":"Secretaría de Desarrollo para Repatriados y Refugiados Connacionales","p":"Aporte financiero complementario","ep":"Vigente","fr":"Trimestral","f":"2025-10-09","ea":"Actualizado"},{"i":"Secretaría Nacional de Turismo","p":"Turismo Joven","ep":"Vigente","fr":"Semestral","f":"2025-12-08","ea":"Actualizado"},{"i":"Secretaría Nacional de Turismo","p":"Programa Posadas Turisticas de Paraguay","ep":"Vigente","fr":"Semestral","f":"2024-06-24","ea":"Desactualizado"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Coordinadora Ejecutiva para la Reforma Agraria","ep":"Cerrado","fr":"Anual","f":"2015-07-26","ea":null},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Construcción de 4500 soluciones habitacionales en el Paraguay CHE TAPYI","ep":"Cerrado","fr":"Anual","f":"2023-05-12","ea":null},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Construcción de 600 SH en el B° San Blas Mariano Roque Alonso","ep":"Cerrado","fr":"Anual","f":"2024-04-23","ea":null},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Construcción de 1000 Soluciones Habitacionales para Pueblos Indígenas","ep":"Vigente","fr":"Anual","f":"2025-08-04","ea":"Actualizado"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Mi vivienda","ep":"Vigente","fr":"Anual","f":"2024-05-02","ea":"Actualizado"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Fondo Nacional de la Vivienda Social (FONAVIS)","ep":"Vigente","fr":"Anual","f":"2025-04-25","ea":"Actualizado"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Fondo para la Convergencia Estructural del Mercosur (FOCEM)","ep":"Cerrado","fr":"Anual","f":"2015-07-26","ea":null},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Programa de Regularización de Asentamientos","ep":"Cerrado","fr":"Anual","f":"2015-07-26","ea":null},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Programa Foncoop (Fondo de viviendas para las cooperativas)","ep":"Cerrado","fr":"Anual","f":"2015-07-26","ea":null},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Pueblos Originarios","ep":"Vigente","fr":"Anual","f":"2025-04-25","ea":"Actualizado"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Sembrando Oportunidades","ep":"Cerrado","fr":"Anual","f":"2022-03-31","ea":null},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Entidades Binacionales","ep":"Cerrado","fr":"Anual","f":"2022-03-31","ea":null},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Vy'a Rendá","ep":"Vigente","fr":"Anual","f":"2025-08-04","ea":"Actualizado"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Mejoramiento y Ampliación de Viviendas del Área Metropolitana de Asunción AMA","ep":"Vigente","fr":"Anual","f":"2024-10-28","ea":"Desactualizado"},{"i":"Ministerio de la Niñez y la Adolescencia","p":"Abrazo","ep":"Vigente","fr":"Mensual","f":"2026-04-30","ea":"Actualizado"},{"i":"Ministerio de la Niñez y la Adolescencia","p":"Programa Nacional de Cuidados Alterntativos DICUIDA","ep":"Vigente","fr":"Mensual","f":"2025-10-07","ea":"Desactualizado"},{"i":"Secretaria de la Juventud","p":"Apoyo economico a la educación superior","ep":"Vigente","fr":"Anual","f":"2024-05-07","ea":"Desactualizado"},{"i":"Ministerio de Justicia y Trabajo","p":"Ambaapo Paraguay","ep":"Cerrado","fr":"Anual","f":null,"ea":null},{"i":"Ministerio de Justicia y Trabajo","p":"Sistema Nacional de Formación y Capacitación Laboral","ep":"Cerrado","fr":"Anual","f":null,"ea":null},{"i":"Servicio Nacional de Saneamiento Ambiental","p":"Vacunación Antiaftosa","ep":"Cerrado","fr":"Anual","f":null,"ea":null}];
+const RAW = [{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Centro de entrenamiento del emprendedor","ep":"Vigente","fr":"Anual","f":"2025-07-08"},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Centro de desarrollo del emprendedor-Sinafocal Emprende","ep":"Vigente","fr":"Anual","f":"2025-03-07"},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Jovenes Buscadores del Primer empleo","ep":"Cerrado","fr":"Anual","f":"2019-01-31"},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Micro y pequeños empresarios","ep":"Cerrado","fr":"Anual","f":"2019-01-31"},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Pequeños productores rurales","ep":"Cerrado","fr":"Anual","f":"2019-01-31"},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Curso de Capacitación Laboral","ep":"Vigente","fr":"Anual","f":"2025-07-08"},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Registro de Institutos de Formación y Capacitación Laboral","ep":"Vigente","fr":"Anual","f":"2024-07-16"},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Acciones Formativas","ep":"Vigente","fr":"Anual","f":"2025-12-11"},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Servicio Nacional de Promoción Profesional SNPP","ep":"Cerrado","fr":"Anual","f":"2018-05-03"},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Programa de Capacitación para el Productor Rural","ep":"Cerrado","fr":"Anual","f":"2023-05-16"},{"i":"Ministerio de Trabajo, Empleo y Seguridad Social","p":"Centro de Innovación de Metodologias Avanzadas y Formación de Instructores","ep":"Vigente","fr":"Anual","f":"2025-07-08"},{"i":"Ministerio de Agricultura y Ganadería","p":"Extensión Agraria","ep":"Vigente","fr":"Anual","f":"2024-06-10"},{"i":"Ministerio de Agricultura y Ganadería","p":"Programa de Agricultura y Economía Indígena","ep":"Cerrado","fr":"Anual","f":"2015-07-28"},{"i":"Ministerio de Agricultura y Ganadería","p":"Programa de Desarrollo Rural Sostenible","ep":"Cerrado","fr":"Anual","f":"2018-07-31"},{"i":"Ministerio de Agricultura y Ganadería","p":"Programa de Modernización de la Gestión Pública de Apoyos Agropecuarios","ep":"Cerrado","fr":"Anual","f":"2016-04-04"},{"i":"Ministerio de Agricultura y Ganadería","p":"Programa de Producción de Alimentos","ep":"Cerrado","fr":"Anual","f":"2015-11-23"},{"i":"Ministerio de Agricultura y Ganadería","p":"Programa Nacional de Fomento Pecuario","ep":"Cerrado","fr":"Anual","f":"2016-05-31"},{"i":"Ministerio de Agricultura y Ganadería","p":"Programa Nacional de Fortalecimiento de la Agricultura Familiar","ep":"Cerrado","fr":"Anual","f":"2015-07-28"},{"i":"Ministerio de Agricultura y Ganadería","p":"Proyecto de Fortalecimiento de la Agricultura Familiar Sostenibles","ep":"Cerrado","fr":"Anual","f":"2015-07-28"},{"i":"Ministerio de Agricultura y Ganadería","p":"Equipamiento para la Producción Agrícola en el Paraguay","ep":"Cerrado","fr":"Anual","f":"2024-06-03"},{"i":"Ministerio de Agricultura y Ganadería","p":"Proyecto de Inclusión de la Agricultura Familiar en Cadenas de Valor (Proyecto Paraguay Inclusivo)","ep":"Cerrado","fr":"Anual","f":"2018-01-11"},{"i":"Dirección de Beneficencia y Ayuda Social","p":"Asistencia Económica para gastos médicos","ep":"Vigente","fr":"Mensual","f":"2026-05-05"},{"i":"Dirección de Beneficencia y Ayuda Social","p":"Provisión de Insumos hospitalarios de Alta Complejidad","ep":"Vigente","fr":"Mensual","f":"2026-05-05"},{"i":"Consejo Nacional de Ciencia y Tecnología","p":"Incentivos para la formación de investigadores en posgrados nacionales PROCIENCIA I","ep":"Cerrado","fr":"Anual","f":"2018-01-26"},{"i":"Consejo Nacional de Ciencia y Tecnología","p":"Incentivos para la formación de investigadores en posgrados nacionales PROCIENCIA II","ep":"Vigente","fr":"Anual","f":"2025-08-22"},{"i":"Consejo Nacional de Ciencia y Tecnología","p":"Programa Nacional de Incentivo a los Investigadores 2018","ep":"Cerrado","fr":"Anual","f":"2018-03-13"},{"i":"Consejo Nacional de Ciencia y Tecnología","p":"Programa Nacional de Incentivo a los Investigadores 2022","ep":"Cerrado","fr":"Anual","f":"2023-05-26"},{"i":"Consejo Nacional de Ciencia y Tecnología","p":"Programa Nacional de Incentivo a los Investigadores 2023","ep":"Cerrado","fr":"Anual","f":"2024-10-15"},{"i":"Consejo Nacional de Ciencia y Tecnología","p":"Sistema Nacional de Investigadores (SISNI) 2024","ep":"Vigente","fr":"Anual","f":"2025-08-22"},{"i":"Fondo Nacional de la Cultura y las Artes","p":"Trasferencias Becas","ep":"Vigente","fr":"Trimestral","f":"2026-01-05"},{"i":"Fondo Nacional de la Cultura y las Artes","p":"Trasferencias Personas Físicas","ep":"Vigente","fr":"Trimestral","f":"2026-01-05"},{"i":"Secretaria Nacional de Emergencia","p":"Asistencia en Situacion de Emergencia y/o Desastres","ep":"Vigente","fr":"Mensual","f":"2025-11-27"},{"i":"Crédito Agrícola de Habilitación","p":"Asistencia Financiera","ep":"Cerrado","fr":"Mensual","f":"2015-10-13"},{"i":"Crédito Agrícola de Habilitación","p":"Banca Comunal","ep":"Vigente","fr":"Mensual","f":"2024-10-29"},{"i":"Crédito Agrícola de Habilitación","p":"Bonos Equipamiento para la Producción Agrícola","ep":"Cerrado","fr":"Mensual","f":"2018-12-14"},{"i":"Crédito Agrícola de Habilitación","p":"Bonos Equipamiento para la Producción Agrícola (EPA 70/30)","ep":"Cerrado","fr":"Mensual","f":"2020-06-02"},{"i":"Crédito Agrícola de Habilitación","p":"CAH MERCADEO","ep":"Vigente","fr":"Mensual","f":"2020-10-06"},{"i":"Crédito Agrícola de Habilitación","p":"Crédito a través de Descuento de Documento","ep":"Vigente","fr":"Mensual","f":"2020-10-06"},{"i":"Crédito Agrícola de Habilitación","p":"Dirección de Apoyo a la Agricultura Familiar","ep":"Cerrado","fr":"Mensual","f":"2020-10-06"},{"i":"Crédito Agrícola de Habilitación","p":"Inversión Productiva","ep":"Vigente","fr":"Mensual","f":"2024-10-29"},{"i":"Crédito Agrícola de Habilitación","p":"Juventud Emprendedora","ep":"Vigente","fr":"Mensual","f":"2024-10-29"},{"i":"Crédito Agrícola de Habilitación","p":"Mujer Emprendedora","ep":"Vigente","fr":"Mensual","f":"2024-10-29"},{"i":"Crédito Agrícola de Habilitación","p":"Petro CAH","ep":"Vigente","fr":"Mensual","f":"2020-10-06"},{"i":"Crédito Agrícola de Habilitación","p":"ProAgro CAH","ep":"Vigente","fr":"Mensual","f":"2024-10-29"},{"i":"Crédito Agrícola de Habilitación","p":"Programa de Producción de Alimento","ep":"Cerrado","fr":"Mensual","f":"2020-10-06"},{"i":"Crédito Agrícola de Habilitación","p":"ProMandioca","ep":"Vigente","fr":"Mensual","f":"2024-10-29"},{"i":"Crédito Agrícola de Habilitación","p":"Subsidio","ep":"Cerrado","fr":"Mensual","f":"2015-07-29"},{"i":"Crédito Agrícola de Habilitación","p":"Equipamiento para la Producción Agricola Recuperación de Inversión","ep":"Cerrado","fr":"Mensual","f":"2020-10-07"},{"i":"Crédito Agrícola de Habilitación","p":"Turismo Rural","ep":"Vigente","fr":"Mensual","f":"2020-10-06"},{"i":"Crédito Agrícola de Habilitación","p":"Ñepyrura","ep":"Vigente","fr":"Mensual","f":"2024-10-29"},{"i":"Crédito Agrícola de Habilitación","p":"Alquimia","ep":"Cerrado","fr":"Mensual","f":"2020-06-02"},{"i":"Crédito Agrícola de Habilitación","p":"Po Joasa","ep":"Vigente","fr":"Mensual","f":"2024-10-29"},{"i":"Crédito Agrícola de Habilitación","p":"Mbaretera","ep":"Vigente","fr":"Mensual","f":"2024-10-29"},{"i":"Crédito Agrícola de Habilitación","p":"Triagro BioCAH","ep":"Cerrado","fr":"Mensual","f":"2020-10-06"},{"i":"Crédito Agrícola de Habilitación","p":"Para micro y pequeñas empresas","ep":"Vigente","fr":"Mensual","f":"2024-10-29"},{"i":"Crédito Agrícola de Habilitación","p":"Producción acuicola","ep":"Vigente","fr":"Mensual","f":"2024-10-29"},{"i":"Instituto Nacional de Desarrollo Rural y de la Tierra","p":"Titulación de Tierras","ep":"Vigente","fr":"Semestral","f":"2026-03-10"},{"i":"Instituto Forestal Nacional","p":"Asistencia Técnica realizada","ep":"Cerrado","fr":"Mensual","f":"2022-08-22"},{"i":"Instituto Forestal Nacional","p":"Asistencia Técnica a productores y productoras","ep":"Cerrado","fr":"Mensual","f":"2023-10-01"},{"i":"Instituto Forestal Nacional","p":"Capacitación a productores rurales y actores del sector forestal","ep":"Cerrado","fr":"Mensual","f":"2019-10-01"},{"i":"Instituto Forestal Nacional","p":"Asistencia Técnica a productores rurales y otros del sector","ep":"Vigente","fr":"Mensual","f":"2026-05-12"},{"i":"Instituto Forestal Nacional","p":"Formación de Técnico Superior Forestal","ep":"Vigente","fr":"Anual","f":"2026-05-13"},{"i":"Ministerio de Educación y Ciencias","p":"Administración del Sistema Educativo Cultural","ep":"Cerrado","fr":"Anual","f":"2017-10-02"},{"i":"Ministerio de Educación y Ciencias","p":"Administración del Sistema Educativo Cultural Becas Media","ep":"Vigente","fr":"Anual","f":"2025-12-11"},{"i":"Ministerio de Educación y Ciencias","p":"Administración del Sistema Educativo Cultural Tercer Ciclo","ep":"Vigente","fr":"Anual","f":"2024-07-04"},{"i":"Ministerio de Educación y Ciencias","p":"Administración del Sistema Educativo Cultural Becas Superior","ep":"Vigente","fr":"Anual","f":"2025-09-24"},{"i":"Ministerio de Industria y Comercio","p":"FOCEM","ep":"Cerrado","fr":"Trimestral","f":"2015-07-25"},{"i":"Ministerio de Industria y Comercio","p":"Programa Competitividad Microempresarial.","ep":"Cerrado","fr":"Trimestral","f":"2017-12-10"},{"i":"Ministerio de Industria y Comercio","p":"Incubadora de Empresas","ep":"Cerrado","fr":"Trimestral","f":"2015-07-25"},{"i":"Ministerio de Salud Pública y Bienestar Social","p":"APS","ep":"Vigente","fr":"Trimestral","f":"2017-08-11"},{"i":"Ministerio de Salud Pública y Bienestar Social","p":"Salud Bucodental","ep":"Vigente","fr":"Trimestral","f":"2017-09-08"},{"i":"Ministerio de Salud Pública y Bienestar Social","p":"Sub Sistema de Informacion de Estadisticas Vitales (partos)","ep":"Vigente","fr":"Trimestral","f":"2024-07-14"},{"i":"Secretaria Nacional por los Derechos Humanos de las Personas con Discapacidad","p":"Protección y Rehabilitación a Personas con Discapacidad","ep":"Vigente","fr":"Mensual","f":"2025-12-12"},{"i":"Secretaria Nacional de Deportes","p":"Becas","ep":"Cerrado","fr":"Anual","f":"2023-12-27"},{"i":"Secretaria Nacional de Deportes","p":"Proyecto escuela iniciación deportiva","ep":"Cerrado","fr":"Anual","f":"2024-03-04"},{"i":"Secretaria Nacional de Deportes","p":"Juegos Escolares Estudiantiles Nacionales","ep":"Vigente","fr":"Anual","f":"2026-05-01"},{"i":"Secretaria Nacional de Deportes","p":"colonia de verano","ep":"Vigente","fr":"Anual","f":"2025-09-12"},{"i":"Secretaria Nacional de Deportes","p":"Programa de Apoyo a Atletas de Alto Rendimiento","ep":"Vigente","fr":"Anual","f":"2026-01-05"},{"i":"Secretaria Nacional de Deportes","p":"Torneo Interinstitucional","ep":"Vigente","fr":"Anual","f":"2026-01-05"},{"i":"Secretaria Nacional de Deportes","p":"Escuela Deportiva SND","ep":"Vigente","fr":"Anual","f":"2026-01-05"},{"i":"Administración Nacional de Electricidad","p":"Tarifa Social de la Ande","ep":"Vigente","fr":"Semestral","f":"2024-11-18"},{"i":"Instituto Paraguayo del Indígena","p":"Asistencia Integral a Indígenas","ep":"Cerrado","fr":"Anual","f":"2019-10-10"},{"i":"Instituto Paraguayo del Indígena","p":"Asistencia Económica a Indigenas (Ayuda Social y Subsidio Estudiantil)","ep":"Vigente","fr":"Mensual","f":"2026-05-10"},{"i":"Instituto Paraguayo del Indígena","p":"Asistencia Técnica Jurídica a Comunidades Indigenas (Medios de Vida)","ep":"Cerrado","fr":"Mensual","f":"2023-12-12"},{"i":"Instituto Paraguayo del Indígena","p":"Asistencia Técnica y económica para el desarrollo productivo","ep":"Vigente","fr":"Anual","f":"2025-06-18"},{"i":"Ministerio de la Mujer","p":"Mujeres Emprendedoras de la Agricultura Familiar (ALA/UE)","ep":"Cerrado","fr":"Anual","f":"2017-12-19"},{"i":"Ministerio de Hacienda","p":"Gastos de Sepelios","ep":"Vigente","fr":"Mensual","f":"2020-07-22"},{"i":"Ministerio de Hacienda","p":"Haberes Atrasados","ep":"Vigente","fr":"Mensual","f":"2017-04-25"},{"i":"Ministerio de Hacienda","p":"Herederos de Policías y Militares","ep":"Vigente","fr":"Mensual","f":"2025-06-24"},{"i":"Ministerio de Hacienda","p":"Herederos de Veteranos","ep":"Vigente","fr":"Mensual","f":"2025-06-30"},{"i":"Ministerio de Hacienda","p":"Pension Graciable","ep":"Vigente","fr":"Mensual","f":"2025-06-24"},{"i":"Ministerio de Hacienda","p":"Pensión a Veteranos de la Guerra del Chaco","ep":"Vigente","fr":"Mensual","f":"2025-06-24"},{"i":"Ministerio de Desarrollo Social","p":"Focem Mercosur Habitat - Fortalecimiento de Capital Humano y Social en Condiciones de Pobreza","ep":"Cerrado","fr":"Bimensual","f":"2017-02-28"},{"i":"Ministerio de Desarrollo Social","p":"Proyecto FOCEM YPORA - Acceso al agua potable y saneamiento básico","ep":"Cerrado","fr":"Bimensual","f":"2016-11-05"},{"i":"Ministerio de Desarrollo Social","p":"Programa de Asistencia a Pescadores del Territorio Nacional","ep":"Vigente","fr":"Anual","f":"2025-04-29"},{"i":"Ministerio de Desarrollo Social","p":"PROGRAMA TENONDERÃ","ep":"Vigente","fr":"Semestral","f":"2026-02-10"},{"i":"Ministerio de Desarrollo Social","p":"TEKOHA - Programa de Desarrollo y Apoyo Social a Territorios Sociales","ep":"Vigente","fr":"Semestral","f":"2025-12-30"},{"i":"Ministerio de Desarrollo Social","p":"TEKOPORÃ - Programa de Transferencia Monetaria con Corresponsabilidad","ep":"Vigente","fr":"Mensual","f":"2025-12-11"},{"i":"Ministerio de Desarrollo Social","p":"Pension Alimentaria Adulto Mayor","ep":"Vigente","fr":"Mensual","f":"2025-12-22"},{"i":"Secretaría de Desarrollo para Repatriados y Refugiados Connacionales","p":"Subsidio de repatriación de connacionales","ep":"Vigente","fr":"Trimestral","f":"2025-08-18"},{"i":"Secretaría de Desarrollo para Repatriados y Refugiados Connacionales","p":"Subsidio de repatriación de restos mortales de connacionales","ep":"Vigente","fr":"Trimestral","f":"2025-07-09"},{"i":"Secretaría de Desarrollo para Repatriados y Refugiados Connacionales","p":"Subsidio de Repatriación de Asistencia Económica","ep":"Vigente","fr":"Trimestral","f":"2025-10-08"},{"i":"Secretaría de Desarrollo para Repatriados y Refugiados Connacionales","p":"Aporte financiero complementario","ep":"Vigente","fr":"Trimestral","f":"2025-10-09"},{"i":"Secretaría Nacional de Turismo","p":"Turismo Joven","ep":"Vigente","fr":"Semestral","f":"2026-04-08"},{"i":"Secretaría Nacional de Turismo","p":"Programa Posadas Turisticas de Paraguay","ep":"Vigente","fr":"Semestral","f":"2024-06-24"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Coordinadora Ejecutiva para la Reforma Agraria","ep":"Cerrado","fr":"Anual","f":"2015-07-26"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Construcción de 4500 soluciones habitacionales en el Paraguay CHE TAPYI","ep":"Cerrado","fr":"Anual","f":"2023-05-12"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Construcción de 600 SH en el B° San Blas Mariano Roque Alonso","ep":"Cerrado","fr":"Anual","f":"2024-04-23"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Construcción de 1000 Soluciones Habitacionales para Pueblos Indígenas","ep":"Vigente","fr":"Anual","f":"2025-08-04"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Mi vivienda","ep":"Vigente","fr":"Anual","f":"2024-05-02"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Fondo Nacional de la Vivienda Social (FONAVIS)","ep":"Vigente","fr":"Anual","f":"2026-04-22"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Fondo para la Convergencia Estructural del Mercosur (FOCEM)","ep":"Cerrado","fr":"Anual","f":"2015-07-26"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Programa de Regularización de Asentamientos","ep":"Cerrado","fr":"Anual","f":"2015-07-26"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Programa Foncoop (Fondo de viviendas para las cooperativas)","ep":"Cerrado","fr":"Anual","f":"2015-07-26"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Pueblos Originarios","ep":"Vigente","fr":"Anual","f":"2025-04-25"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Sembrando Oportunidades","ep":"Cerrado","fr":"Anual","f":"2022-03-31"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Entidades Binacionales","ep":"Cerrado","fr":"Anual","f":"2022-03-31"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Vy'a Rendá","ep":"Vigente","fr":"Anual","f":"2025-08-04"},{"i":"Ministerio de Urbanismo, Vivienda y Hábitat","p":"Mejoramiento y Ampliación de Viviendas del Área Metropolitana de Asunción AMA","ep":"Vigente","fr":"Anual","f":"2024-10-28"},{"i":"Ministerio de la Niñez y la Adolescencia","p":"Abrazo","ep":"Vigente","fr":"Mensual","f":"2026-04-30"},{"i":"Ministerio de la Niñez y la Adolescencia","p":"Programa Nacional de Cuidados Alterntativos DICUIDA","ep":"Vigente","fr":"Mensual","f":"2025-10-07"},{"i":"Secretaria de la Juventud","p":"Apoyo economico a la educación superior","ep":"Vigente","fr":"Anual","f":"2024-05-07"},{"i":"Ministerio de Justicia y Trabajo","p":"Ambaapo Paraguay","ep":"Cerrado","fr":"Anual","f":null},{"i":"Ministerio de Justicia y Trabajo","p":"Sistema Nacional de Formación y Capacitación Laboral","ep":"Cerrado","fr":"Anual","f":null},{"i":"Servicio Nacional de Saneamiento Ambiental","p":"Vacunación Antiaftosa","ep":"Cerrado","fr":"Anual","f":null}];
 
 // ============================================================
 // CONSTANTES
 // ============================================================
 const DIAS_INTERVALO = {Mensual:30, Bimensual:60, Trimestral:90, Semestral:180, Anual:365};
 const PROX_FACTOR = 0.85; // 85% del intervalo → alerta de "Próximo a vencer"
-const TODAY = new Date();
+const TODAY = new Date('2026-05-01T00:00:00'); // Fecha fija para el dashboard
  
 // ============================================================
 // UTILIDADES
@@ -507,6 +506,18 @@ const TODAY = new Date();
 function diasDesde(f) {
   if (!f) return null;
   return Math.floor((TODAY - new Date(f + 'T00:00:00')) / 86400000);
+}
+
+function calcularEstadoActualizacion(r) {
+  if (r.ep === 'Cerrado') return 'Sin registro';
+  if (!r.f) return 'Sin registro';
+  
+  const dias = diasDesde(r.f);
+  const intervalo = DIAS_INTERVALO[r.fr] || 365;
+  
+  // Si han pasado más días que el intervalo, está desactualizado
+  if (dias > intervalo) return 'Desactualizado';
+  return 'Actualizado';
 }
 
 function alertaVencimiento(r) {
@@ -523,10 +534,6 @@ function fmtFecha(f) {
   if (!f) return '—';
   const [y, m, d] = f.split('-');
   return `${d}/${m}/${y}`;
-}
-
-function eaNorm(r) {
-  return r.ep === 'Cerrado' ? 'Sin registro' : (r.ea || 'Sin registro');
 }
 
 // ============================================================
@@ -554,15 +561,17 @@ function getFiltered() {
   const fa = document.getElementById('fEA').value;
   const ff = document.getElementById('fFr').value;
   const fb = document.getElementById('fBusq').value.toLowerCase().trim();
+  
   return RAW.filter(r => {
-    const ea = eaNorm(r);
+    const ea = calcularEstadoActualizacion(r);
+    
     if (fi && r.i !== fi) return false;
     if (fe && r.ep !== fe) return false;
     if (fa && ea !== fa) return false;
     if (ff && r.fr !== ff) return false;
     if (fb && !r.p.toLowerCase().includes(fb) && !r.i.toLowerCase().includes(fb)) return false;
     return true;
-  }).map(r => ({...r, ea_norm: eaNorm(r)}));
+  }).map(r => ({...r, ea: calcularEstadoActualizacion(r)}));
 }
 
 // ============================================================
@@ -572,8 +581,8 @@ function renderKPI(data) {
   const total = data.length;
   const vig   = data.filter(r => r.ep === 'Vigente').length;
   const cerr  = data.filter(r => r.ep === 'Cerrado').length;
-  const act   = data.filter(r => r.ea_norm === 'Actualizado').length;
-  const des   = data.filter(r => r.ea_norm === 'Desactualizado').length;
+  const act   = data.filter(r => r.ea === 'Actualizado').length;
+  const des   = data.filter(r => r.ea === 'Desactualizado').length;
   const inst  = new Set(data.map(r => r.i)).size;
 
   document.getElementById('k-total').textContent = total;
@@ -604,9 +613,9 @@ let chartDonut, chartFreq, chartInst;
 
 function renderCharts(data) {
   const vig = data.filter(r => r.ep === 'Vigente');
-  const act = vig.filter(r => r.ea_norm === 'Actualizado').length;
-  const des = vig.filter(r => r.ea_norm === 'Desactualizado').length;
-  const sr  = vig.filter(r => r.ea_norm === 'Sin registro').length;
+  const act = vig.filter(r => r.ea === 'Actualizado').length;
+  const des = vig.filter(r => r.ea === 'Desactualizado').length;
+  const sr  = vig.filter(r => r.ea === 'Sin registro').length;
 
   // DONUT
   if (chartDonut) chartDonut.destroy();
@@ -658,7 +667,7 @@ function renderCharts(data) {
   vig.forEach(r => {
     if (!instMap[r.i]) instMap[r.i] = {act: 0, tot: 0};
     instMap[r.i].tot++;
-    if (r.ea_norm === 'Actualizado') instMap[r.i].act++;
+    if (r.ea === 'Actualizado') instMap[r.i].act++;
   });
   const sorted = Object.entries(instMap)
     .map(([k, v]) => ({i: k, pct: Math.round(v.act / v.tot * 100), tot: v.tot}))
@@ -688,62 +697,66 @@ function renderCharts(data) {
 }
 
 // ============================================================
-// RENDER TABLA INSTITUCIONES
+// RENDER TABLA INSTITUCIONES — NUEVA ESTRUCTURA
 // ============================================================
 function renderInstTable(data) {
-  const vig = data.filter(r => r.ep === 'Vigente');
   const map = {};
-  vig.forEach(r => {
-    if (!map[r.i]) map[r.i] = {tot: 0, act: 0, des: 0, sr: 0};
+  data.forEach(r => {
+    if (!map[r.i]) map[r.i] = {tot: 0, vig: 0, act: 0, des: 0, cerr: 0};
     map[r.i].tot++;
-    if (r.ea_norm === 'Actualizado')     map[r.i].act++;
-    else if (r.ea_norm === 'Desactualizado') map[r.i].des++;
-    else                                 map[r.i].sr++;
+    if (r.ep === 'Vigente') {
+      map[r.i].vig++;
+      if (r.ea === 'Actualizado')     map[r.i].act++;
+      else if (r.ea === 'Desactualizado') map[r.i].des++;
+    } else {
+      map[r.i].cerr++;
+    }
   });
-  const rows = Object.entries(map).sort((a, b) => b[1].tot - a[1].tot);
+  
+  const rows = Object.entries(map).sort((a, b) => b[1].vig - a[1].vig);
   const tb = document.getElementById('bodyInst');
   tb.innerHTML = '';
   rows.forEach(([inst, v]) => {
-    const pct  = Math.round(v.act / v.tot * 100);
-    const cls  = pct >= 80 ? '' : pct >= 50 ? 'warn' : 'bad';
+    const pctAct = v.vig > 0 ? Math.round(v.act / v.vig * 100) : 0;
+    const cls  = pctAct >= 80 ? '' : pctAct >= 50 ? 'warn' : 'bad';
     const tr   = document.createElement('tr');
     tr.innerHTML = `
       <td><strong>${inst}</strong></td>
       <td style="text-align:center;font-weight:700">${v.tot}</td>
+      <td style="text-align:center;font-weight:700;color:var(--teal)">${v.vig}</td>
       <td style="text-align:center;color:var(--green);font-weight:700">${v.act}</td>
       <td style="text-align:center;color:var(--red);font-weight:700">${v.des}</td>
-      <td style="text-align:center;color:#92400e;font-weight:700">${v.sr}</td>
+      <td style="text-align:center;color:#6b7280;font-weight:700">${v.cerr}</td>
       <td style="min-width:140px">
         <div style="display:flex;align-items:center;gap:8px">
-          <div class="inst-bar"><div class="inst-bar-fill ${cls}" style="width:${pct}%"></div></div>
-          <span style="font-weight:700;font-size:12px;color:${pct>=80?'var(--green)':pct>=50?'var(--gold)':'var(--red)'}">${pct}%</span>
+          <div class="inst-bar"><div class="inst-bar-fill ${cls}" style="width:${pctAct}%"></div></div>
+          <span style="font-weight:700;font-size:12px;color:${pctAct>=80?'var(--green)':pctAct>=50?'var(--gold)':'var(--red)'}">${pctAct}%</span>
         </div>
       </td>`;
     tb.appendChild(tr);
   });
   document.getElementById('inst-count-label').textContent =
-    `${rows.length} institución${rows.length !== 1 ? 'es' : ''} con programas vigentes`;
+    `${rows.length} institución${rows.length !== 1 ? 'es' : ''} registradas`;
 }
 
 // ============================================================
-// RENDER TABLA DETALLE
+// RENDER TABLA DETALLE — SOLO VIGENTES
 // ============================================================
 function renderDetailTable(data) {
+  const vigentes = data.filter(r => r.ep === 'Vigente');
   const tb = document.getElementById('bodyDet');
   tb.innerHTML = '';
-  data.forEach((r, idx) => {
-    const ea    = r.ea_norm;
+  vigentes.forEach((r, idx) => {
+    const ea    = r.ea;
     const eaCls = ea === 'Actualizado' ? 'act' : ea === 'Desactualizado' ? 'des' : 'sr';
-    const epCls = r.ep === 'Vigente' ? 'vig' : 'cerr';
     const alerta = alertaVencimiento(r);
-    const dias   = r.ep === 'Vigente' && r.f ? diasDesde(r.f) : null;
+    const dias   = r.f ? diasDesde(r.f) : null;
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td style="color:var(--mid);text-align:center">${idx + 1}</td>
       <td style="max-width:200px">${r.i}</td>
       <td style="max-width:260px"><strong>${r.p}</strong></td>
       <td><span style="font-size:11px;background:#f3f4f6;padding:2px 7px;border-radius:8px">${r.fr}</span></td>
-      <td><span class="pill ${epCls}">${r.ep}</span></td>
       <td style="white-space:nowrap">${fmtFecha(r.f)}</td>
       <td>${ea ? `<span class="pill ${eaCls}">${ea}</span>` : '<span class="pill cerr">N/A</span>'}</td>
       <td style="text-align:center">${dias !== null ? dias + 'd' : '—'}</td>
@@ -751,7 +764,7 @@ function renderDetailTable(data) {
     tb.appendChild(tr);
   });
   document.getElementById('tblCount').textContent =
-    `Mostrando ${data.length} de ${RAW.length} registros`;
+    `Mostrando ${vigentes.length} de ${RAW.filter(r => r.ep === 'Vigente').length} programas vigentes`;
 }
 
 // ============================================================
@@ -776,12 +789,13 @@ function resetFilters() {
 // ============================================================
 function exportCSV() {
   const d = getFiltered();
-  const hdr = ['#','Institución','Programa','Frecuencia','Estado Programa',
+  const vigentes = d.filter(r => r.ep === 'Vigente');
+  const hdr = ['#','Institución','Programa','Frecuencia',
                 'Última Actualización','Estado Actualización','Días Transcurridos','Alerta Vencimiento'];
-  const rows = d.map((r, i) => {
-    const dias = r.ep === 'Vigente' && r.f ? diasDesde(r.f) : '';
+  const rows = vigentes.map((r, i) => {
+    const dias = r.f ? diasDesde(r.f) : '';
     const al   = alertaVencimiento(r).txt.replace(/[✓⚠⏳]/g,'').trim();
-    return [i+1, r.i, r.p, r.fr, r.ep, r.f||'', r.ea_norm||'N/A', dias, al]
+    return [i+1, r.i, r.p, r.fr, r.f||'', r.ea||'N/A', dias, al]
       .map(v => `"${String(v).replace(/"/g,'""')}"`).join(',');
   });
   const blob = new Blob(['﻿' + [hdr.join(','), ...rows].join('\n')],
